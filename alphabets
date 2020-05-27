@@ -1,0 +1,84 @@
+
+
+
+
+
+default_alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', "'", ' ', '~']
+
+
+def to_alphabet(in_str, replace_list=["-", "_", "~"], delete_list=["\""], alphabet=default_alphabet):
+    in_str = in_str.lower()
+
+    # replace and remove stuff
+    in_str = "".join([c if c not in replace_list else " " for c in in_str])
+    in_str = "".join([c for c in in_str if c not in delete_list])
+    in_str = "".join([c if c in alphabet else " " for c in in_str])
+
+    in_str = in_str.strip(" \n\t")
+
+    # collapse consecutive white spaces
+    ret = ""
+    last_char = ""
+    for char in in_str:
+        if not ((last_char == " ") and (char == " ")):
+            ret += char
+        last_char = char
+
+    return ret
+
+
+
+def to_indices(in_str, alphabet=default_alphabet):
+    if in_str == "":
+        return [len(alphabet)-1]
+
+    ret = []
+
+    for char in in_str:
+        try:
+            index = alphabet.index(char)
+        except ValueError:
+            continue
+        ret.append(index)
+
+    return ret
+
+
+
+def to_sentence(indices, keep_blank=False, as_string=True, alphabet=default_alphabet):
+    ret = []
+
+    if all(x == -1 for x in indices):
+        ret.append(alphabet[-1])
+    else:
+        for index in indices:
+            index = int(index)
+            if (keep_blank == False) and (index == -1):
+                continue
+            if (index < -1) or (index > len(alphabet)):
+                continue
+
+            ret.append(alphabet[index])
+
+    if as_string:
+        return "".join(ret)
+    else:
+        return ret
+
+
+
+def count_consecutive(sequence):
+    if sequence == None or len(sequence) == 0:
+        return 0
+    last = sequence[0]
+    sequence = sequence[1:]
+
+    count = 0
+    for item in sequence:
+        if item == last:
+            count += 1
+        
+        last = item
+
+    return count
+
